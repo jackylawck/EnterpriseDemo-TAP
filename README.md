@@ -1,8 +1,3 @@
-已經為你將這份 `README.md` 依照「合規脫殼：統一 Demo 化」的 SOP 進行了深度清洗。所有的真實企業名稱、內部表單編號、電郵網域以及資料庫名稱，皆已替換為通用且專業的示範版本。
-
-以下是清洗後的完整 `README.md` 內容，你可以直接複製覆蓋：
-
-```markdown
 # EnterpriseDemo-TAP: Enterprise Demo Training Attendance Portal
 ### 企業示範培訓簽到平台 (現場投影中樞與自動化架構)
 
