@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-HK" prefix="og: https://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+  
+  <!-- 🔍 Google Search Console 擁有權驗證 -->
+  <meta name="google-site-verification" content="JZ5UohX-CcP_fQV0_DI9VadkKY4ZoTTkUifL88-fIcY">
+
+  <!-- 🏢 基礎 SEO 核心標籤：企業展示項目 -->
+  <title>企業示範培訓簽到平台 EnterpriseDemo-TAP | 通用企業展示 (Enterprise Demo Corp)</title>
+  <meta name="description" content="企業示範培訓簽到平台 (EnterpriseDemo-TAP Form Demo-Form-043) 是通用企業展示 (Enterprise Demo Corp) 自主研發之輕量化現場簽到投影與培訓自動化架構。系統無縫對接 ISO 9001 與 ISO 45001 合規標準，結合 Microsoft 365 實現零人手干預之即時培訓紀錄存證。">
+  <meta name="keywords" content="通用企業展示, Enterprise Demo Corp, EnterpriseDemo-TAP, 培訓簽到, 現場投影, Demo-Form-043, ISO 9001, ISO 45001, PDPO, Power Automate, SharePoint Online, 數位轉型, 人資自動化, 創科應用">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://jackylawck.github.io/EnterpriseDemo-TAP/">
+
+  <!-- 👤 作者與企業資訊 (僅藏於代碼內，不影響前台投影) -->
+  <meta name="author" content="羅子淇 (Jacky Law)">
+  <meta property="article:author" content="羅子淇 (Jacky Law)">
+  <meta name="publisher" content="通用企業展示 (Enterprise Demo Corp)">
+  <meta name="copyright" content="通用企業展示 (Enterprise Demo Corp)">
+
+  <!-- 🌐 Open Graph / LinkedIn / Facebook 社交卡片 -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jackylawck.github.io/EnterpriseDemo-TAP/">
+  <meta property="og:title" content="企業示範培訓簽到平台 EnterpriseDemo-TAP | 通用企業展示">
+  <meta property="og:description" content="通用企業展示自主研發之現場培訓簽到投影中樞與自動化存證架構，全面落實 ISO 9001 及 ISO 45001 企業合規標準。">
+  <meta property="og:site_name" content="通用企業展示 Enterprise Demo Corp">
+  <meta property="og:locale" content="zh_HK">
+
+  <!-- 外部依賴資源與樣式 -->
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+
+<div class="card">
+  <header>
+    <div>
+      <h1 id="i18n-header-title">通用企業展示 · 現場簽到投影中樞</h1>
+      <span class="badge" id="i18n-badge">現場投影版</span>
+    </div>
+    <div class="lang-switch">
+      <button type="button" class="btn-lang active" onclick="switchLanguage('zh')">繁中</button>
+      <button type="button" class="btn-lang" onclick="switchLanguage('en')">EN</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- 設定面版 -->
+    <div class="controls" id="setupPanel">
+      <div class="form-group">
+        <label for="trainingTitle" id="i18n-lbl-title">培訓課程名稱</label>
+        <input type="text" id="trainingTitle" placeholder="例如：企業資訊安全培訓" required>
+      </div>
+
+      <div class="form-group" id="groupTrainerName">
+        <label for="trainerName" id="i18n-lbl-trainer">主講者姓名</label>
+        <input type="text" id="trainerName" placeholder="例如：培訓講師" required autocomplete="off">
+      </div>
+
+      <div class="form-group" id="groupTrainerEmail">
+        <label for="trainerEmailPrefix" id="i18n-lbl-email">主講者公司電郵前綴</label>
+        <div class="email-box">
+          <input type="text" id="trainerEmailPrefix" placeholder="trainer.name" required autocomplete="off">
+          <span>@enterprise-demo.local</span>
+        </div>
+      </div>
+
+      <!-- 培訓地點：任填，預設空白提示 -->
+      <div class="form-group">
+        <label for="trainingLocation" id="i18n-lbl-location">培訓地點</label>
+        <input type="text" id="trainingLocation" placeholder="例如：總部培訓室 / 各分區會議室">
+      </div>
+
+      <!-- 培訓日期（預設為今天） -->
+      <div class="form-group">
+        <label for="trainingDateInput" id="i18n-lbl-date">培訓日期</label>
+        <input type="date" id="trainingDateInput" required>
+      </div>
+
+      <!-- 培訓時段：HTML5 原生時間選擇器 -->
+      <div class="form-group">
+        <label id="i18n-lbl-timerange">培訓時段</label>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="time" id="timeRangeStart" value="09:30" style="flex: 1;" required>
+          <span style="font-weight: bold; color: #4b5563;" id="i18n-time-to">至</span>
+          <input type="time" id="timeRangeEnd" value="17:30" style="flex: 1;" required>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="i18n-btn-start" onclick="startSession()">🚀 一鍵生成並全螢幕投影</button>
+    </div>
+
+    <!-- 投影顯示區 -->
+    <div class="display-box" id="displayBox">
+      <div id="idleView">
+        <p style="color: var(--text-muted); font-size: 14px;" id="i18n-idle-text">填妥左側資料後<br>點擊按鈕直接開啟現場投影</p>
+      </div>
+
+      <div id="activeView" style="display: none; width: 100%;">
+        <div class="session-tag" id="lblSession">TRN-XXXX</div>
+        <h2 id="lblTitle" style="font-size: 22px; margin-bottom: 4px;">培訓主題</h2>
+        <div id="lblSubMeta" style="font-size: 13px; color: #4b5563; margin-bottom: 8px;"></div>
+        
+        <!-- QR Code 容器 -->
+        <div id="qrcode-box"></div>
+        
+        <p style="font-size: 15px; font-weight: 600; margin: 10px 0 4px 0;" id="i18n-scan-hint">請使用手機相機掃描 QR Code 登記出席</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;" id="i18n-scan-subhint">如遇網絡微弱，請連接現場公司 Wi-Fi 重新載入</p>
+        
+        <div style="font-size: 13px; font-weight: 600; color: #003366; margin-bottom: 10px;">
+          <span id="i18n-cutoff-notice">課堂進行時間：</span><span id="lblTimer">00:00</span>
+        </div>
+
+        <p class="privacy-text" id="i18n-privacy-text" style="font-size: 11px; color: #6b7280; line-height: 1.4; border-top: 1px dashed #e5e7eb; padding-top: 8px;">
+          【個資收集聲明範例】本簽到資料（工號、姓名、部門）僅用於本場出勤核對、培訓時數統計及符合合規要求之 Demo-Form-043 紀錄存檔。資料保存期依公司內部人事政策執行，如需查閱或更正請聯絡人力資源組。
+        </p>
+
+        <p class="paper-backup-alert" id="i18n-paper-alert" style="font-size: 11px; color: #b91c1c; font-weight: 500; margin: 4px 0 10px 0;">
+          ⚠️ 若現場網絡持續中斷，請即時啟用 Demo-Form-043 紙本簽到表備用。
+        </p>
+
+        <div class="action-links">
+          <button type="button" onclick="executeFullscreen()" id="i18n-btn-fs">全螢幕投影</button>
+          <button type="button" onclick="openFallbackModal()" id="i18n-btn-planb">現場手動補簽 (Plan B)</button>
+          <button type="button" onclick="triggerImmediateSend()" id="i18n-btn-early-end">✉️ 立即發信</button>
+          <button type="button" onclick="endSession()" style="color: #dc2626;" id="i18n-btn-end">結束本場培訓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Plan B 彈窗 -->
+<div class="modal" id="fallbackModal">
+  <div class="modal-content">
+    <h3 style="margin-bottom: 8px; font-size: 16px;" id="i18n-modal-title">現場手動補簽 (Plan B)</h3>
+    <p style="font-size: 13px; color: #4b5563; line-height: 1.5; margin-bottom: 16px;" id="i18n-modal-desc">
+      當前場次：<strong id="modalSessionId" style="color: #003366;"></strong><br>
+      若個別員工手機無法鏡頭掃碼，點擊下方按鈕將開啟官方簽到表單，場次代碼及課程資料已自動帶入。
+    </p>
+    
+    <button class="btn-primary" id="i18n-modal-submit" onclick="submitRealPlanB()">開啟已帶入場次之補簽表單 ↗</button>
+    <button type="button" onclick="closeFallbackModal()" style="width: 100%; background: none; border: none; margin-top: 12px; font-size: 13px; color: #6b7280; cursor: pointer;" id="i18n-modal-cancel">關閉返回投影</button>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
