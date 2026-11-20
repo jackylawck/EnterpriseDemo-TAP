@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EnterpriseDemo-TAP SharePoint Data Architecture",
+  "description": "Sanitized data schemas for Demo_Training_Attendance and Demo_Training_Sessions lists enforcing PDPO data minimization.",
+  "lists": [
+    {
+      "listName": "Demo_Training_Attendance",
+      "purpose": "Stores individual attendee check-in records submitted via Microsoft Forms.",
+      "accessControl": "RBAC - Restricted to HRD Administrators only",
+      "columns": [
+        {
+          "displayName": "SessionID",
+          "internalName": "Title",
+          "type": "Single line of text",
+          "required": true,
+          "indexed": true,
+          "notes": "Default SharePoint primary column renamed to SessionID; OData $filter must query 'Title'."
+        },
+        {
+          "displayName": "StaffNo",
+          "internalName": "StaffNo",
+          "type": "Single line of text",
+          "required": true
+        },
+        {
+          "displayName": "StaffName",
+          "internalName": "StaffName",
+          "type": "Single line of text",
+          "required": true
+        },
+        {
+          "displayName": "Department",
+          "internalName": "Department",
+          "type": "Choice",
+          "required": true
+        },
+        {
+          "displayName": "VerificationType",
+          "internalName": "VerificationType",
+          "type": "Single line of text",
+          "defaultValue": "On-site QR Check-in"
+        },
+        {
+          "displayName": "Created",
+          "internalName": "Created",
+          "type": "Date and Time (System Managed)",
+          "notes": "UTC timestamp converted to Asia/Hong_Kong (China Standard Time) during report generation."
+        }
+      ]
+    },
+    {
+      "listName": "Demo_Training_Sessions",
+      "purpose": "Event trigger table populated when the trainer clicks 'Send Report Now'.",
+      "columns": [
+        { "displayName": "SessionID", "internalName": "Title", "type": "Single line of text", "required": true },
+        { "displayName": "TrainingTitle", "internalName": "TrainingTitle", "type": "Single line of text", "required": true },
+        { "displayName": "TrainerName", "internalName": "TrainerName", "type": "Single line of text", "required": true },
+        { "displayName": "TrainerEmail", "internalName": "TrainerEmail", "type": "Single line of text", "required": true },
+        { "displayName": "TrainingLocation", "internalName": "TrainingLocation", "type": "Single line of text" },
+        { "displayName": "TrainingDate", "internalName": "TrainingDate", "type": "Single line of text" },
+        { "displayName": "TrainingTime", "internalName": "TrainingTime", "type": "Single line of text" }
+      ]
+    }
+  ]
+}
