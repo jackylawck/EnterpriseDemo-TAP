@@ -1,0 +1,67 @@
+{
+  "flowName": "EnterpriseDemo-TAP_GenerateAttendanceSummary",
+  "description": "Triggered upon session completion; queries matching attendee records, formats Hong Kong timestamps, builds an HTML audit table, and dispatches summary email.",
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "triggers": {
+      "When_an_item_is_created": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline" },
+          "parameters": {
+            "dataset": "https://demo-tenant.sharepoint.com/sites/hr",
+            "table": "demo-list-guid-sessions-0001"
+          }
+        }
+      }
+    },
+    "actions": {
+      "Get_Matched_Attendees": {
+        "runAfter": {},
+        "type": "ApiConnection",
+        "inputs": {
+          "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline" },
+          "parameters": {
+            "dataset": "https://demo-tenant.sharepoint.com/sites/hr",
+            "table": "demo-list-guid-attendance-0002",
+            "$filter": "Title eq '@{triggerOutputs()?['body/Title']}'"
+          }
+        }
+      },
+      "Select_And_Format_Columns": {
+        "runAfter": { "Get_Matched_Attendees": [ "Succeeded" ] },
+        "type": "Select",
+        "inputs": {
+          "from": "@outputs('Get_Matched_Attendees')?['body/value']",
+          "select": {
+            "Staff ID": "@item()?['StaffNo']",
+            "Full Name": "@item()?['StaffName']",
+            "Department": "@item()?['Department']",
+            "Check-in Time (HKT)": "@convertFromUtc(item()?['Created'], 'China Standard Time', 'yyyy-MM-dd HH:mm:ss')"
+          }
+        }
+      },
+      "Create_HTML_Attendance_Table": {
+        "runAfter": { "Select_And_Format_Columns": [ "Succeeded" ] },
+        "type": "Table",
+        "inputs": {
+          "from": "@body('Select_And_Format_Columns')",
+          "format": "HTML"
+        }
+      },
+      "Send_Summary_Email_V2": {
+        "runAfter": { "Create_HTML_Attendance_Table": [ "Succeeded" ] },
+        "type": "ApiConnection",
+        "inputs": {
+          "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365" },
+          "parameters": {
+            "emailMessage/To": "@triggerOutputs()?['body/TrainerEmail']",
+            "emailMessage/Cc": "hrd@enterprise-demo.local",
+            "emailMessage/Subject": "【培訓簽到名單 / Training Attendance】@{triggerOutputs()?['body/TrainingTitle']}",
+            "emailMessage/Body": "<p><strong>課程名稱：</strong>@{triggerOutputs()?['body/TrainingTitle']}<br><strong>日期：</strong>@{triggerOutputs()?['body/TrainingDate']}<br><strong>時間：</strong>@{replace(triggerOutputs()?['body/TrainingTime'], '+', ' ')}<br><strong>地點：</strong>@{replace(triggerOutputs()?['body/TrainingLocation'], '+', ' ')}<br><strong>主講者：</strong>@{triggerOutputs()?['body/TrainerName']}</p><h4>出席人員名單：</h4>@{body('Create_HTML_Attendance_Table')}"
+          }
+        }
+      }
+    }
+  }
+}
